@@ -149,7 +149,9 @@ class Alipay{
      * __construct()
      */
     public function __construct(){
+        $this->_cacert = file_get_contents(dirname(__FILE__).DIRECTORY_SEPARATOR.'cacert.pem');
         if($this->_sign_type == 'RSA'){
+            $this->_private_key = file_get_contents(dirname(__FILE__).DIRECTORY_SEPARATOR.'rsa_private_key.pem');
         }
         if(PHP_OS == 'Linux'){
             $this->_anti_phishing_key = $this->queryTimestamp();
