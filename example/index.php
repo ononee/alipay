@@ -1,6 +1,6 @@
 <?php 
 
-include 'alipay.php';
+include '../src/alipay.php';
 
 $alipay = new Alipay();
 $alipay
