@@ -123,7 +123,7 @@ class Alipay{
     /**
      * 支付宝的公钥，查看地址：https://b.alipay.com/order/pidAndKey.htm 
      */
-    private $_public_key;
+    private $_public_key = 'MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCnxj/9qwVfgoUh/y2W89L6BkRAFljhNhgPdyPuBV64bfQNN1PjbCzkIM6qRdKBoLPXmKKMiFYnkd6rAoprih3/PrQEB/VsW8OoM8fxn67UDYuyBTqA23MML9q1+ilIZwBC2AQ2UBVOrFXfFl75p6/B5KsiNG9zpgmLCUYuLkxpLQIDAQAB';
     
     /**
      * md5时使用此key
@@ -150,7 +150,6 @@ class Alipay{
      */
     public function __construct(){
         if($this->_sign_type == 'RSA'){
-            $this->_cacert = getcwd().'\\cacert.pem';
         }
         if(PHP_OS == 'Linux'){
             $this->_anti_phishing_key = $this->queryTimestamp();
@@ -585,7 +584,6 @@ class Alipay{
         $privateKey = '-----BEGIN RSA PRIVATE KEY-----'.PHP_EOL .wordwrap($privateKey, 64, "\n", true). PHP_EOL.'-----END RSA PRIVATE KEY-----';
         
         $res=openssl_get_privatekey($privateKey);
-        
         if($res){
             openssl_sign($data, $sign,$res);
         } else {
