@@ -149,12 +149,12 @@ class Alipay{
      * __construct()
      */
     public function __construct(){
-        $this->_cacert = file_get_contents(dirname(__FILE__).DIRECTORY_SEPARATOR.'cacert.pem');
+        $this->_cacert = dirname(__FILE__).DIRECTORY_SEPARATOR.'cacert.pem';
         if($this->_sign_type == 'RSA'){
             $this->_private_key = file_get_contents(dirname(__FILE__).DIRECTORY_SEPARATOR.'rsa_private_key.pem');
         }
         if(PHP_OS == 'Linux'){
-            $this->_anti_phishing_key = $this->queryTimestamp();
+            // $this->_anti_phishing_key = $this->queryTimestamp();
         }
         if($_SERVER['SERVER_PORT'] == 443){
             $this->_transport = 'https';
@@ -359,7 +359,7 @@ class Alipay{
         if (!empty($_POST['notify_id'])){
             $responseTxt = $this->getResponse($_POST['notify_id']);
         }
-        return (preg_match('/true$/i', $responseTxt) && $isSign) ? true : false;
+        return (preg_match("/true$/i", $responseTxt) && $isSign) ? true : false;
     }
     
     /**
@@ -374,7 +374,7 @@ class Alipay{
         if (!empty($_GET['notify_id'])){
             $responseTxt = $this->getResponse($_GET['notify_id']);
         }
-        return (preg_match('/true$/i', $responseTxt) && $isSign) ? true : false;
+        return (preg_match("/true$/i", $responseTxt) && $isSign) ? true : false;
     }
     
     /**
@@ -473,9 +473,9 @@ class Alipay{
 	private function getResponse($notifyId) {
 	    $transport = strtolower(trim($this->_transport));
 	    $partner = trim($this->_partner);
-	    $veryfy_url = ($transport == 'https') ? $this->https_verify_url : $this->http_verify_url;
-	    $veryfy_url = $veryfy_url. 'partner=' . $partner . '&notify_id=' . $notifyId;
-	    return $this->getHttpResponseGET($veryfy_url, $this->_cacert);
+	    $verify_url = ($transport == 'https') ? $this->_https_verify_url : $this->_http_verify_url;
+	    $verify_url = $verify_url. 'partner=' . $partner . '&notify_id=' . $notifyId;
+	    return $this->getHttpResponseGET($verify_url, $this->_cacert);
 	}
     
     /**
@@ -490,9 +490,9 @@ class Alipay{
 	    curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, 2);
 	    curl_setopt($curl, CURLOPT_CAINFO, $cacertUrl);
 	    curl_setopt($curl, CURLOPT_HEADER, 0 );
-	    curl_setopt($curl,CURLOPT_RETURNTRANSFER, 1);
-	    curl_setopt($curl,CURLOPT_POST,true);
-	    curl_setopt($curl,CURLOPT_POSTFIELDS,$para);
+	    curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+	    curl_setopt($curl, CURLOPT_POST,true);
+	    curl_setopt($curl, CURLOPT_POSTFIELDS,$para);
 	    $responseText = curl_exec($curl);
 	    curl_close($curl);
 	    
@@ -502,16 +502,15 @@ class Alipay{
     /**
      * 远程获取数据，GET模式
      */
-	private function getHttpResponseGET($url,$cacertUrl){
+	private function getHttpResponseGET($url, $cacertUrl){
 	    $curl = curl_init($url);
 	    curl_setopt($curl, CURLOPT_HEADER, 0 );
-	    curl_setopt($curl,CURLOPT_RETURNTRANSFER, 1);
+	    curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
 	    curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, true);
 	    curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, 2);
 	    curl_setopt($curl, CURLOPT_CAINFO, $cacertUrl);
 	    $responseText = curl_exec($curl);
 	    curl_close($curl);
-	    
 	    return $responseText;
 	}
     
@@ -573,7 +572,7 @@ class Alipay{
      */
     private function md5Verify($preStr, $sign, $key){
         $mySign = md5($preStr.$key);
-        return $mySgin == $sign ? true : false;
+        return $mySign == $sign ? true : false;
     }
     
     /**
