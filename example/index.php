@@ -14,6 +14,6 @@ $alipay
 ->setShowUrl('http://www.exmaple.com')
 ->setNotifyUrl('http://www.exmaple.com')
 ->setReturnUrl('http://www.exmaple.com')
-->setKey('AAAAAAAAAAAAAAAAAAAAA');
+->setKey('AAAAAAAAAAAAAAAAAAAAAXXXX');
 
 header('Location:'.$alipay->getPayLink());
